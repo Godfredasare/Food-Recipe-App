@@ -7,14 +7,12 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{animation: 'slide_from_right'}} />
       <Stack.Screen name="Recipe" component={RecipeDetailScreen} />
     </Stack.Navigator>
   );
 };
 
 export default AppNavigation;
-
-const styles = StyleSheet.create({});
