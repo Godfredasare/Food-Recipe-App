@@ -17,6 +17,13 @@ import Recipes from "../components/recipes";
 const HomeScreen = () => {
   const [activeCategory, setActiveCategory] = useState("Beef");
   const [categories, setCategories] = useState([]);
+  const [meals, setMeals] = useState([]);
+
+  const handleChangeCategory = (category) => {
+    fetchRecipes(category);
+    setActiveCategory(category);
+    setMeals([]);
+  };
 
   const fetchCategory = async () => {
     try {
@@ -31,9 +38,23 @@ const HomeScreen = () => {
       console.log("Category error", error);
     }
   };
+  const fetchRecipes = async (category = "Beef") => {
+    try {
+      const response = await axios.get(
+        `https://themealdb.com/api/json/v1/1/filter.php?c=${category}`
+      );
+      // console.log(response.data)
+      if (response && response.data) {
+        setMeals(response.data.meals);
+      }
+    } catch (error) {
+      console.log("Category error", error);
+    }
+  };
 
   useEffect(() => {
     fetchCategory();
+    fetchRecipes();
   }, []);
 
   return (
@@ -67,18 +88,21 @@ const HomeScreen = () => {
             <MagnifyingGlassIcon size={hp(2.5)} color={"gray"} />
           </View>
         </View>
-       
-       {/* categories */}
+
+        {/* categories */}
         {categories.length > 0 && (
           <Categories
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
             categories={categories}
+            handleChangeCategory={handleChangeCategory}
           />
         )}
 
         {/* recipes */}
-        <Recipes />
+        <View>
+          <Recipes mealData={meals} categories={categories} />
+        </View>
       </ScrollView>
     </View>
   );
@@ -92,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   wrap: {
-    padding: 20,
+    padding: 10,
     paddingBottom: 50,
     paddingTop: 30,
   },
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#dedede",
+    backgroundColor: "#DCDCDf",
     padding: 5,
     borderRadius: 20,
     paddingLeft: 10,
