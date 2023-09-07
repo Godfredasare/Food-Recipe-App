@@ -1,8 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import Colors from "../configs/color";
+import { Image } from "expo-image";
+
+
 
 const Categories = ({ activeCategory, categories, handleChangeCategory }) => {
   return (
@@ -32,6 +35,7 @@ const Categories = ({ activeCategory, categories, handleChangeCategory }) => {
               <Image
                 source={{ uri: cat.strCategoryThumb }}
                 style={styles.image}
+                cachePolicy={'disk'}
               />
             </View>
             <Text>{cat.strCategory}</Text>

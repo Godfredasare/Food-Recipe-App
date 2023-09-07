@@ -43,7 +43,6 @@ const HomeScreen = () => {
       const response = await axios.get(
         `https://themealdb.com/api/json/v1/1/filter.php?c=${category}`
       );
-      // console.log(response.data)
       if (response && response.data) {
         setMeals(response.data.meals);
       }

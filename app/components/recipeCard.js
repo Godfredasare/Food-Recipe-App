@@ -1,10 +1,10 @@
-import { StyleSheet, Text, Pressable, Image } from "react-native";
+import { StyleSheet, Text, Pressable, Image, View } from "react-native";
 import React from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Animated, { FadeInDown, sharedTransitionTag } from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 const RecipeCard = ({ item, index, onPress }) => {
   let isEven = index % 2 == 0;
@@ -27,11 +27,14 @@ const RecipeCard = ({ item, index, onPress }) => {
           },
         ]}
       >
-        <Animated.Image
-          source={{ uri: item.strMealThumb }}
-          style={[styles.image, { height: masonry ? hp(23) : hp(32) }]}
-          sharedTransitionTag={item.strMeal}
-        />
+        <View style={[styles.image, { height: masonry ? hp(23) : hp(32), backgroundColor: '#DCDCDf' }]}>
+          <Animated.Image
+            source={{ uri: item.strMealThumb }}
+            style={[styles.image, { height: masonry ? hp(23) : hp(32) }]}
+            sharedTransitionTag={item.strMeal}
+            cachePolicy={"disk"}
+          />
+        </View>
         <Text style={styles.text} numberOfLines={1}>
           {item?.strMeal}
         </Text>
