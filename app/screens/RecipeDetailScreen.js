@@ -20,6 +20,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import axios from "axios";
 import Loading from "../components/loading";
 import ListIcon from "../components/listIcon";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 const RecipeDetailScreen = ({ route }) => {
   const [favorite, setFavorite] = useState(false);
@@ -51,13 +52,38 @@ const RecipeDetailScreen = ({ route }) => {
     fetchRecipes(item?.idMeal);
   }, []);
 
+  const ingredientsIndexes = (meals) => {
+    if (!meals) return [];
+    let indexes = [];
+    for (let i = 1; i <= 20; i++) {
+      if (meals["strIngredient" + i]) {
+        indexes.push(i);
+      }
+    }
+
+    return indexes;
+  };
+
+  const getYouTubeVideoId = (youtubeUrl) => {
+    // Match the video ID using a regular expression
+    const regex = /[?&]v=([^?&]+)/;
+    const match = youtubeUrl.match(regex);
+
+    if (match && match[1]) {
+      return match[1];
+    } else {
+      // Handle invalid or unrecognized URLs
+      return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
       <ScrollView>
         <View style={styles.wrapImage}>
           <Animated.Image
-            sharedTransitionTag={item?.strMeal}
+            sharedTransitionTag={item.strMeal}
             source={{ uri: item.strMealThumb }}
             style={styles.image}
           />
@@ -109,9 +135,86 @@ const RecipeDetailScreen = ({ route }) => {
                 icon={"Square3Stack3DIcon"}
                 strokeWidth={2}
                 text={"Easy"}
-                style={{bottom: 10, fontSize: hp(2) }}
+                style={{ bottom: 10, fontSize: hp(2) }}
               />
             </View>
+            <View>
+              <Text
+                style={{
+                  color: "rgb(64 64 64)",
+                  fontWeight: "500",
+                  fontSize: hp(2.5),
+                }}
+              >
+                Ingredients
+              </Text>
+              <View>
+                {ingredientsIndexes(meals).map((i) => (
+                  <View style={styles.wrapIngredient} key={i}>
+                    <View
+                      style={{
+                        width: hp(1.7),
+                        height: hp(1.7),
+                        backgroundColor: Colors.primary,
+                        borderRadius: 20,
+                      }}
+                    />
+                    <View style={styles.ingredient}>
+                      <Text
+                        style={{ color: "rgb(38 38 38)", fontSize: hp(1.7) }}
+                      >
+                        {meals["strMeasure" + i]}
+                      </Text>
+                      <Text
+                        style={{ color: "rgb(64 64 64)", fontSize: hp(1.7) }}
+                      >
+                        {meals["strIngredient" + i]}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <View>
+              <Text
+                style={{
+                  color: "rgb(64 64 64)",
+                  fontWeight: "500",
+                  fontSize: hp(2.5),
+                }}
+              >
+                Intructions
+              </Text>
+              <Text
+                style={{
+                  color: "rgb(64 64 64)",
+                  fontWeight: "400",
+                  fontSize: hp(1.6),
+                }}
+              >
+                {meals?.strInstructions}
+              </Text>
+
+              
+            </View>
+            {meals?.strYoutube && (
+              <View style={{ gap: 10 }}>
+                <Text
+                  style={{
+                    color: "rgb(64 64 64)",
+                    fontWeight: "500",
+                    fontSize: hp(2.5),
+                  }}
+                >
+                  Recipe Video
+                </Text>
+                <YoutubePlayer
+                  videoId={getYouTubeVideoId(meals?.strYoutube)}
+                  height={hp(30)}
+                />
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
@@ -177,5 +280,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 25,
+  },
+  wrapIngredient: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    paddingVertical: 5,
+  },
+  ingredient: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
   },
 });
